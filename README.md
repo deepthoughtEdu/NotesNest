@@ -20,7 +20,7 @@ Make sure you have the following installed on your system:
 2. **Create the Configuration File:**
    Go to the project's root directory and create a file named `config.json`.
 
-   ```json
+   ```javascript
    {
        "port": 3000,
        "env": "<Development_Environment>", // Can be either "development" or "production"
