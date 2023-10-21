@@ -2,10 +2,16 @@ const errors = require('./errors')
 
 const helpers = module.exports;
 
-helpers.setupApiRoute = function (router, method, name, middlewares, controller) {
-	router[method](name, middlewares, helpers.tryRoute(controller, (err, res) => {
+helpers.setupApiRoute = function (router, method, endPoint, middlewares, controller) {
+	router[method](endPoint, middlewares, helpers.tryRoute(controller, (err, res) => {
 		helpers.formatApiResponse(400, res, err);
 	}));
+};
+
+helpers.setupPageRoute = function (router, endPoint, middlewares, controller) {
+	middlewares = [].concat(middlewares);
+
+	router.get(endPoint, middlewares, helpers.tryRoute(controller,  helpers.handleNotFoundError));
 };
 
 helpers.tryRoute = function (controller, handler) {
@@ -50,3 +56,11 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 		res.status(statusCode).json(errors.generateHttpError(statusCode));
 	}
 };
+
+helpers.handleNotFoundError = async (err, res) => {
+	const data = {
+		title: err.message
+	};
+
+	res.render('404', data);
+}
