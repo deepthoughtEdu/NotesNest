@@ -1,11 +1,12 @@
 const {MongoClient} = require('mongodb');
 const config = require('../config.json');
 
-const databaseIndex = module.exports;
+const databaseIndex = {};
 const {info} = console;
 
 databaseIndex.collections = require('./collections');
-databaseIndex.client = null;
+databaseIndex.mongoClient = {};
+databaseIndex.client = {};
 
 databaseIndex.initializeConnection = async function () {
     const {database, mongoUri} = config;
@@ -18,11 +19,18 @@ databaseIndex.initializeConnection = async function () {
         throw new Error('Database name is required for connection');
     }
 
-    const client = new MongoClient(mongoUri, {connectTimeoutMS: 90000});
+    const client = new MongoClient(mongoUri, {
+        connectTimeoutMS: 90000,
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
 
     var connection = await client.connect();   
+    databaseIndex.mongoClient = connection; 
     databaseIndex.client = connection.db(database); 
 
-    info('Established connection with ' + database);
+    info('Established connection with database: ' + database);
 
 }
+
+module.exports = databaseIndex;
