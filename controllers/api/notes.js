@@ -6,3 +6,7 @@ const notesController = module.exports;
 notesController.create = async (req, res) => {
 	helpers.formatApiResponse(200, res, await apiHandlers.notes.create(req));
 };
+
+notesController.get = async (req, res) => {
+	helpers.formatApiResponse(200, res, await apiHandlers.notes.get(req));
+};
