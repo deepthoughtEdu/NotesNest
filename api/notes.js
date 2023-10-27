@@ -8,17 +8,16 @@ const collectionName = collections.NOTES;
 
 notes.create = async (req) => {
     const { userId } = req.user;
-    const { title, content } = req.body;
+    const {  } = req.body; // What data can we get from frontend?
 
     const payload = {
-        uid: userId,
-        title,
-        content,
+        userId,
+        // We need to store user's ID and note's meta-data
         createdAt: utiities.getISOTimestamp(),
         updatedAt: utiities.getISOTimestamp(),
     };
 
-    return await database.client.collection(collectionName).insertOne(payload);
+    return await database.client.collection(collectionName).thatMethod(payload) // What's the method that stores data into MongoDB?
 };
 
 notes.get = async (req) => {
@@ -28,12 +27,13 @@ notes.get = async (req) => {
 
     const key = {};
 
-    if (req.query.title) key.title = req.query.title;
+    // What if I want to search via title?
+    if (req.query.title)  req.query.title;
 
     const [data, count] = await Promise.all([
-        database.client.collection(collectionName).find(key).skip(offset).limit(limit).toArray(),
-        database.client.collection(collectionName).countDocuments(key)
+        database.client.collection(collectionName).find(key).skip(offset).limit(limit), // Oh no it's returing a cursor, how do I fix it?
+        // We need to count to paginate
     ])
 
-    return utiities.paginate(`/api/request/${req.url}`, data, count, limit, page);
+    // How can we return the data, paginated?
 };
